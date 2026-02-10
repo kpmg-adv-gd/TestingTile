@@ -1,0 +1,14 @@
+{
+  "welcomeFile": "/TestingTile/index.html",
+  "authenticationMethod": "none",
+  "logout": {
+    "logoutEndpoint": "/do/logout"
+  },
+  "routes": [
+    {
+      "source": "^/TestingTile/(.*)$",
+      "target": "$1",
+      "localDir": "webapp"
+    }
+  ]
+}

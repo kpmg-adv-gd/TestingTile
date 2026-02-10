@@ -1,0 +1,112 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.InspectionTileView" width="100%" height="100%">
+	<App id="app"> 
+		<Page id="mainPage" title="{i18n>mainview.title}">
+			<content>
+				<VBox height="10%" renderType="Bare" class="sapUiSmallMargin">
+					<!-- Filtri e Bottoni sulla stessa riga -->
+					<HBox alignItems="End" justifyContent="SpaceBetween" width="100%">
+						<!-- Filtri -->
+						<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+							<Label text="{i18n>mainview.filter.project}" />
+							<ComboBox id="projectFilter" width="100%" placeholder="{i18n>mainview.filter.project.placeholder}" items="{inspectionModel>/projects}">
+								<core:ListItem key="{inspectionModel>project}" text="{inspectionModel>project}" />
+							</ComboBox>
+						</VBox>
+						
+						<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+							<Label text="{i18n>mainview.filter.wbs}"/>
+							<Input id="wbsFilter" width="100%" placeholder="{i18n>mainview.filter.wbs.placeholder}"/>
+						</VBox>
+						
+						<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+							<Label text="{i18n>mainview.filter.startDate}"/>
+							<DateTimePicker id="startDateFilter" width="100%" valueFormat="yyyy-MM-dd'T'HH:mm" displayFormat="dd/MM/yyyy HH:mm" />
+						</VBox>
+						
+						<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+							<Label text="{i18n>mainview.filter.endDate}"/>
+							<DateTimePicker id="endDateFilter" width="100%" valueFormat="yyyy-MM-dd'T'HH:mm" displayFormat="dd/MM/yyyy HH:mm" />
+						</VBox>
+						
+						<!-- Bottoni allineati verticalmente -->
+						<VBox width="20%">
+							<HBox width="100%" justifyContent="Center" class="sapUiTinyMarginBottom">
+								<Button id="searchButton" text="{i18n>mainview.btn.search}" icon="sap-icon://search" press="onSearchPress" type="Emphasized" class="sapUiTinyMarginEnd searchBottom"/>
+								<Button id="clearButton" text="{i18n>mainview.btn.clear}" icon="sap-icon://clear-filter" press="onClearPress" class="clearBottom" />
+							</HBox>
+							<HBox width="100%" justifyContent="Center">
+								<Button id="expandButton" text="{i18n>mainview.btn.expandAll}" icon="sap-icon://expand-group" press="onExpandAll" class="sapUiTinyMarginEnd expandBottom"/>
+								<Button id="collapseButton" text="{i18n>mainview.btn.collapseAll}" icon="sap-icon://collapse-group" press="onCollapseAll" class="collapseBottom"/>
+							</HBox>
+						</VBox>
+					</HBox>
+				</VBox>
+				<VBox height="85.5%" renderType="Bare">
+					<!-- TreeTable -->
+					<table:TreeTable
+						id="inspectionTreeTable"
+						width="100%"
+						busy="{inspectionModel>/BusyLoadingOpTable}" 
+						rows="{inspectionModel>/treeData}"
+						selectionMode="Single"
+						ariaLabelledBy="title"
+						rowSelectionChange="onRowSelectionChange"
+						enableColumnReordering="true" 
+						enableGrouping="true" 
+						selectionBehavior="RowOnly"
+						visibleRowCountMode="Auto"
+						visibleRowCount="10" 
+						rowHeight="45px"
+						class="kpmgGDTable smallPaddingTable">
+						<table:layoutData>
+							<FlexItemData growFactor="1" baseSize="0%"/>
+						</table:layoutData>
+						<table:columns>
+							<table:Column width="20%">
+								<Label text="{i18n>mainview.table.project}"/>
+								<table:template>
+									<Text text="{inspectionModel>project}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							
+							<table:Column width="20%">
+								<Label text="{i18n>mainview.table.wbs}"/>
+								<table:template>
+									<Text text="{inspectionModel>wbs}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							
+							<table:Column width="20%">
+								<Label text="{i18n>mainview.table.sfc}"/>
+								<table:template>
+									<Text text="{inspectionModel>sfc}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							
+							<table:Column width="20%">
+								<Label text="{i18n>mainview.table.machineSection}"/>
+								<table:template>
+									<Text text="{inspectionModel>material}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							
+							<table:Column width="10%">
+								<Label text="{i18n>mainview.table.date}"/>
+								<table:template>
+									<Text text="{inspectionModel>assemblyReportDate}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+							
+							<table:Column width="10%">
+								<Label text="{i18n>mainview.table.user}"/>
+								<table:template>
+									<Text text="{inspectionModel>user}" wrapping="false"/>
+								</table:template>
+							</table:Column>
+						</table:columns>
+					</table:TreeTable>
+				</VBox>
+			</content>
+		</Page>
+	</App> 
+</mvc:View>

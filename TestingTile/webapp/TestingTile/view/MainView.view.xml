@@ -1,0 +1,52 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.MainView" width="100%" height="100%">
+    <Page showHeader="false" enableScrolling="false">
+        <content>
+            <VBox width="100%" height="100%">
+                <IconTabBar 
+                    id="mainIconTabBar" 
+                    class="kpmgGDIconTabBar" 
+                    stretchContentHeight="true" 
+                    expandable="false" 
+                    select="handleIconTabBarSelect" 
+                    selectedKey="INSPECTION">
+                    <items>
+                        <IconTabFilter 
+                            icon="sap-icon://quality-issue" 
+                            text="{i18n>tab.inspection.title}" 
+                            key="INSPECTION">
+                            <mvc:XMLView viewName="kpmg.custom.testingTile.TestingTile.TestingTile.view.InspectionView" />
+                        </IconTabFilter>
+                        
+                        <IconTabFilter 
+                            icon="sap-icon://document-text" 
+                            text="{i18n>tab.verbalManagement.title}" 
+                            key="VERBAL_MANAGEMENT">
+                            <mvc:XMLView viewName="kpmg.custom.testingTile.TestingTile.TestingTile.view.VerbalManagement" />
+                        </IconTabFilter>
+                        
+                        <IconTabFilter 
+                            icon="sap-icon://shield" 
+                            text="{i18n>tab.safety.title}" 
+                            key="SAFETY_APPROVAL">
+                            <mvc:XMLView viewName="kpmg.custom.testingTile.TestingTile.TestingTile.view.SafetyApproval" />
+                        </IconTabFilter>
+                        
+                        <IconTabFilter 
+                            icon="sap-icon://complete" 
+                            text="{i18n>tab.finalReport.title}" 
+                            key="FINAL_REPORT">
+                            <mvc:XMLView viewName="kpmg.custom.testingTile.TestingTile.TestingTile.view.FinalCollaudo" />
+                        </IconTabFilter>
+
+                        <IconTabFilter 
+                            icon="sap-icon://complete" 
+                            text="{i18n>tab.colluadoProgress.title}" 
+                            key="COLLAUDO_PROGRESS">
+                            <mvc:XMLView viewName="kpmg.custom.testingTile.TestingTile.TestingTile.view.CollaudoProgress" />
+                        </IconTabFilter>
+                    </items>
+                </IconTabBar>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

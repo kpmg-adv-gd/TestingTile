@@ -1,0 +1,114 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.VerbalManagementDetail" width="100%" height="100%">
+	<Page id="verbalManagementDetailPage" title="{i18n>verbalManagementDetailPage.title}" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<HBox height="4%" renderType="Bare" justifyContent="Start" class="sapUiSmallMargin">
+				<HBox alignItems="Center" justifyContent="End" width="75%">
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.project}:" textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{verbalManagementDetailModel>/selectedVerbalManagementRow/project}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.sfc}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{verbalManagementDetailModel>/selectedVerbalManagementRow/sfc}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.order}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{verbalManagementDetailModel>/selectedVerbalManagementRow/order}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.co}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{verbalManagementDetailModel>/selectedVerbalManagementRow/co}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.customer}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{verbalManagementDetailModel>/selectedVerbalManagementRow/customer}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+				</HBox>
+				<!-- Filtri e Bottoni sulla stessa riga -->
+				<HBox alignItems="End" justifyContent="End" width="25%">
+					<Button id="expandVerbalManagementButton" text="{i18n>verbalManagementDetail.btn.expandAll}" icon="sap-icon://expand-group" press="onExpandAll" class="sapUiTinyMarginEnd expandBottom"/>
+					<Button id="collapseVerbalManagementButton" text="{i18n>verbalManagementDetail.btn.collapseAll}" icon="sap-icon://collapse-group" press="onCollapseAll" class="sapUiTinyMarginEnd collapseBottom"/>
+					<Button id="editVerbalManagementButton"  icon="sap-icon://edit" press="onEditTreeTable" class="sapUiTinyMarginEnd collapseBottom"/>
+					<Button id="duplicateVerbalManagementButton"  icon="sap-icon://duplicate" visible="{= ${verbalManagementDetailModel>/selectedVerbalManagementRow/status} === 'RELEASABLE'}"  enabled="{= ${verbalManagementDetailModel>/selectedTreeTableRow/level} === 1}" press="onDuplicateTreeTable" class="sapUiTinyMarginEnd collapseBottom"/>
+					<Button id="deleteVerbalManagementButton" icon="sap-icon://delete" visible="{= ${verbalManagementDetailModel>/selectedVerbalManagementRow/status} === 'RELEASABLE'}"  enabled="{= ${verbalManagementDetailModel>/selectedTreeTableRow/level} === 1}" press="onDeleteTreeTable" class="sapUiTinyMarginEnd collapseBottom"/>
+				</HBox>
+			</HBox>
+			<VBox height="83.5%" renderType="Bare">
+				<!-- TreeTable -->
+				<table:TreeTable
+					id="verbalManagementTreeTable"
+					width="100%"
+					busy="{verbalManagementDetailModel>/BusyLoadingOpTable}" 
+					rows="{
+						path: 'verbalManagementDetailModel>/treeData',
+						parameters: {
+							arrayNames: ['children']
+						}
+					}"
+					selectionMode="Single"
+					ariaLabelledBy="title"
+					rowSelectionChange="onRowSelectionChange"
+					enableColumnReordering="true" 
+					enableGrouping="true" 
+					selectionBehavior="RowOnly"
+					visibleRowCountMode="Auto"
+					visibleRowCount="10" 
+					rowHeight="45px"
+					class="kpmgGDTable smallPaddingTable">
+					<table:layoutData>
+						<FlexItemData growFactor="1" baseSize="0%"/>
+					</table:layoutData>
+					<table:columns>
+						<table:Column width="60%">
+							<Label text="{i18n>verbalManagementDetail.table.description}"/>
+							<table:template>
+								<Text text="{verbalManagementDetailModel>description}" wrapping="false"/>
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="10%" hAlign="Center">
+							<Label text="{i18n>verbalManagementDetail.table.machineType}"/>
+							<table:template>
+								<Text text="{verbalManagementDetailModel>machineType}" wrapping="false"/>
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="10%" hAlign="Center">
+							<Label text="{i18n>verbalManagementDetail.table.wc}"/>
+							<table:template>
+								<HBox height="100%" width="100%" renderType="Bare">
+									<ComboBox selectedKey="{verbalManagementDetailModel>workcenter}" items="{verbalManagementDetailModel>/workcenters}" visible="{= ${verbalManagementDetailModel>level} !== 3}" enabled="{verbalManagementDetailModel>/editMode}" change="onWorkcenterChange" width="100%">
+										<core:Item key="{verbalManagementDetailModel>workcenter}" text="{verbalManagementDetailModel>description}" />
+									</ComboBox>
+									<Text visible="{= ${verbalManagementDetailModel>level} === 3}" text="{verbalManagementDetailModel>workcenter}" wrapping="false"/>
+								</HBox>
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="10%" hAlign="Center">
+							<Label text="{i18n>verbalManagementDetail.table.safety}"/>
+							<table:template>
+								<CheckBox selected="{verbalManagementDetailModel>safety}" visible="{= ${verbalManagementDetailModel>level} === 2}" enabled="{verbalManagementDetailModel>/editMode}" text="" />
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="10%" hAlign="Center">
+							<Label text="{i18n>verbalManagementDetail.table.active}"/>
+							<table:template>
+								<CheckBox selected="{verbalManagementDetailModel>active}" visible="{= ${verbalManagementDetailModel>level} === 2}" enabled="{verbalManagementDetailModel>/editMode}" text="" />
+							</table:template>
+						</table:Column>
+						
+					</table:columns>
+				</table:TreeTable>
+			</VBox>
+			<VBox height="4%" renderType="Bare" justifyContent="Center" class="sapUiSmallMargin">
+				<!-- Filtri e Bottoni sulla stessa riga -->
+				<HBox alignItems="End" justifyContent="End" width="100%" class="mediumMarginBottom">
+					<Button id="saveVerbalManagementButton" text="{i18n>common.save}" type="Emphasized"  press="onSave" class="sapUiTinyMarginEnd saveButton"/>
+					<Button id="releaseVerbalManagementButton" text="{i18n>common.release}" type="Emphasized"  press="onRelease" class="releaseButton"/>
+				</HBox>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

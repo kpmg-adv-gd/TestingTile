@@ -1,0 +1,187 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.SafetyApproval" width="100%" height="100%">
+		<Page id="mainsafetyApprovalPage" title="{i18n>safetyApproval.title}">
+			<content>
+				<Panel id="safetyApprovalPanel" width="100%" height="100%" expandable="false" expanded="true" backgroundDesign="Transparent">
+					<content>
+						<!-- Header con filtri -->
+						<VBox height="10%" renderType="Bare" class="sapUiSmallMargin">
+							<!-- Filtri e Bottoni sulla stessa riga -->
+							<HBox alignItems="End" justifyContent="SpaceBetween" width="100%">
+								<!-- Filtri -->
+								<VBox width="14%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>safetyApproval.filter.project}" />
+									<ComboBox id="projectsafetyApprovalFilter" width="100%" placeholder="{i18n>safetyApproval.filter.project.placeholder}" items="{safetyApprovalModel>/projects}">
+										<core:ListItem key="{safetyApprovalModel>}" text="{safetyApprovalModel>}" />
+									</ComboBox>
+								</VBox>
+
+
+								<VBox width="14%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>safetyApproval.filter.sfc}"/>
+									<ComboBox id="orderSafetyApprovalFilter" width="100%" placeholder="{i18n>safetyApproval.filter.sfc.placeholder}" items="{safetyApprovalModel>/sfcs}" >
+										<core:ListItem key="{safetyApprovalModel>}" text="{safetyApprovalModel>}" />
+									</ComboBox>
+								</VBox>
+
+
+								<VBox width="14%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>safetyApproval.filter.co}"/>
+									<ComboBox id="coSafetyApprovalFilter" width="100%" placeholder="{i18n>safetyApproval.filter.co.placeholder}" items="{safetyApprovalModel>/cos}" >
+										<core:ListItem key="{safetyApprovalModel>}" text="{safetyApprovalModel>}" />
+									</ComboBox>
+								</VBox>
+
+
+								<VBox width="14%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>safetyApproval.filter.startDate}"/>
+									<DateTimePicker id="startDateSafetyApprovalFilter" width="100%" valueFormat="yyyy-MM-dd'T'HH:mm" displayFormat="dd/MM/yyyy HH:mm" />
+								</VBox>
+
+
+								<VBox width="14%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>safetyApproval.filter.endDate}"/>
+									<DateTimePicker id="endDateSafetyApprovalFilter" width="100%" valueFormat="yyyy-MM-dd'T'HH:mm" displayFormat="dd/MM/yyyy HH:mm" />
+								</VBox>
+								
+								<!-- Bottoni allineati verticalmente -->
+								<VBox width="16%">
+									<HBox width="100%" justifyContent="Center" class="sapUiTinyMarginBottom">
+										<Button id="searchSafetyApprovalButton" text="{i18n>mainview.btn.search}" icon="sap-icon://search" press="onSearchPress" type="Emphasized" class="sapUiTinyMarginEnd searchBottom"/>
+										<Button id="clearSafetyApprovalButton" text="{i18n>mainview.btn.clear}" icon="sap-icon://clear-filter" press="onClearPress" class="clearBottom" />
+									</HBox>
+                                        <HBox justifyContent="Center">
+                                            <CheckBox id="showAllsafetyApproval" text="Show all" />
+                                        </HBox>
+								</VBox>
+							</HBox>
+						</VBox>
+						<!-- Table -->
+						<VBox height="77.5%" renderType="Bare">
+							<table:Table
+								id="safetyApprovalTable"
+								width="100%"
+								busy="{safetyApprovalModel>/BusyLoadingOpTable}" 
+								rows="{safetyApprovalModel>/tableData}"
+								selectionMode="Single"
+								ariaLabelledBy="title"
+								rowSelectionChange="onRowSelectionChange"
+								enableColumnReordering="true" 
+								enableGrouping="true" 
+								selectionBehavior="RowOnly"
+								visibleRowCountMode="Auto"
+								visibleRowCount="10" 
+								rowHeight="45px"
+								class="kpmgGDTable smallPaddingTable">
+								<table:layoutData>
+									<FlexItemData growFactor="1" baseSize="0%"/>
+								</table:layoutData>
+								<table:columns>
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.project}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>project}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.sfc}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>sfc}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.co}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>co}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="15%">
+										<Label text="{i18n>safetyApproval.table.macroAttivita}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>macroActivity}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.machineType}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>machineType}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.user}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>user}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.date}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>datetime}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="15%">
+										<Label text="{i18n>safetyApproval.table.comment}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>comment}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="10%">
+										<Label text="{i18n>safetyApproval.table.status}"/>
+										<table:template>
+											<HBox width="100%" alignItems="Center" >
+												<core:Icon src="{path: 'safetyApprovalModel>status',formatter: '.statusIcon'}" color="{path: 'safetyApprovalModel>status', formatter: '.statusColor'}" class="largeIcon"/>
+												<Text text="{safetyApprovalModel>status}" class="smallMarginLeftTextIcon" />
+											</HBox>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="15%">
+										<Label text="{i18n>safetyApproval.table.approvalComment}"/>
+										<table:template>
+											<Text text="{safetyApprovalModel>approval_comment}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+								</table:columns>
+							</table:Table>
+						</VBox>
+						<!-- Bottoni finali Approve/Cancel -->
+						<VBox height="4%" renderType="Bare" justifyContent="Center" class="sapUiSmallMargin">
+							<HBox alignItems="End" justifyContent="End" width="100%" class="mediumMarginBottom">
+								<Button id="approvaSafetyButton" text="{i18n>common.approve}" icon="sap-icon://accept" iconFirst="true" type="Emphasized"  press="onOpenDialog" enabled="{= ${safetyApprovalModel>/selectedRow/status} === 'Waiting'}" class="sapUiTinyMarginEnd saveButton"/>
+								<Button id="cancelSafetyButton" text="{i18n>common.cancel}" icon="sap-icon://cancel" iconFirst="true" type="Emphasized"  press="onCancel" enabled="{= ${safetyApprovalModel>/selectedRow/status} === 'Waiting'}" class="cancelButton"/>
+							</HBox>
+					</VBox>
+					</content>
+						<Dialog
+							id="commentSafetyDialog"
+							title="{i18n>comment.dialog.title}"
+							contentWidth="400px"
+							contentHeight="250px">
+							<content>
+								<VBox class="sapUiSmallMargin">
+									<Label text="{i18n>comment.dialog.label}" class="sapUiSmallMarginBottom"/>
+									<TextArea
+										id="commentApproveTextArea"
+										rows="8"
+										width="100%"
+										placeholder="{i18n>comment.dialog.placeholder}"/>
+								</VBox>
+							</content>
+							<beginButton>
+								<Button text="{i18n>comment.dialog.btn.save}" type="Emphasized" press="onApprove"/>
+							</beginButton>
+							<endButton>
+								<Button text="{i18n>comment.dialog.btn.cancel}" press="onCloseDialog"/>
+							</endButton>
+						</Dialog>
+				</Panel>
+			</content>
+		</Page>
+</mvc:View>

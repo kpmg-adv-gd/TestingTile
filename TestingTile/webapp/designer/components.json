@@ -1,0 +1,15 @@
+{
+	"components": [
+		{
+			"id": "TestingTile",
+			"type": "VIEW_PLUGIN",
+			"allowMultipleInstances": false,
+			"name": "kpmg.custom.testingTile.TestingTile.TestingTile",
+			"propertyEditor": "kpmg.custom.testingTile.TestingTile.TestingTile.builder.PropertyEditor",
+			"i18n": "kpmg.custom.testingTile.TestingTile.TestingTile.i18n.i18n",
+            "productionProcessEnabled": true,
+           "productionProcessTitle": "TestingTile",
+			"supportedPodTypes": ["WORK_CENTER","OPERATION","ORDER","OTHER"]
+		}   
+	]
+}

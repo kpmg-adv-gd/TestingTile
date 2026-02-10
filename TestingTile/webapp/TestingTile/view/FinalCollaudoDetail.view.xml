@@ -1,0 +1,676 @@
+<mvc:View 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	xmlns:l="sap.ui.layout" 
+	xmlns:core="sap.ui.core"
+	xmlns:viz="sap.viz.ui5.controls"
+	xmlns:table="sap.ui.table"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+	controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.FinalCollaudoDetail" 
+	width="100%" 
+	height="100%">
+	
+	<Page id="finalCollaudoDetailPage" title="{i18n>finalCollaudoDetail.title}" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<VBox width="100%" height="100%">
+				
+				<HBox width="100%"  height="10%" class="sapUiSmallMargin" renderType="Bare"> 
+					<HBox width="33%" height="100%" class="headerBox" renderType="Bare">
+                        <Label text="{i18n>finalCollaudoDetail.label.project}:" textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+                        <Label text="{FinalCollaudoDetailModel>/selectedRow/project}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+                    </HBox>
+                    <HBox width="33%" height="100%" class="headerBox" renderType="Bare">
+                        <Label text="{i18n>finalCollaudoDetail.label.sfc}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+                        <Label text="{FinalCollaudoDetailModel>/selectedRow/sfc}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+                    </HBox>
+                    <HBox width="33%" height="100%" class="headerBox" renderType="Bare">
+                        <Label text="{i18n>finalCollaudoDetail.label.customer}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+                        <Label text="{FinalCollaudoDetailModel>/selectedRow/customer}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+                    </HBox>
+				</HBox>
+
+				<!-- Container per le due tabelle -->
+				<HBox width="100%"  height="auto" class="sapUiSmallMargin" renderType="Bare"> 
+
+					<!-- Tabella sinistra - 35% -->
+					<VBox width="20%"  height="100%" class="sapUiSmallMarginEnd">
+						<Table
+							width="100%"
+							id="finalCollaudoDetailTable"
+							items="{FinalCollaudoDetailModel>/groupsData}"
+							busy="{FinalCollaudoDetailModel>/BusyLoadingOpTable}" 
+							mode="SingleSelectMaster"
+							selectionChange="onSelectGroup"
+							class="sapUiSmallMarginTop">
+							<columns>
+								<Column>
+									<Text text="{i18n>finalCollaudoDetail.sections.title}"/>
+								</Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{FinalCollaudoDetailModel>description}"/>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</VBox>
+					
+					<!-- Tabella destra - 65% -->
+					<VBox width="80%" height="100%">
+						<VBox width="98%" height="55%" visible="{FinalCollaudoDetailModel>/viewCustomTableWeights}">
+							<ComboBox width="30%" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" selectedKey="{FinalCollaudoDetailModel>/selectedIdReportWeight}" change="onIdWeightChange" showSecondaryValues="true" id="idReportWeightCollaudo" items="{FinalCollaudoDetailModel>/listIdReportWeight}" >
+								<core:ListItem key="{FinalCollaudoDetailModel>id}" text="{FinalCollaudoDetailModel>id}" />
+							</ComboBox>    
+							<!-- Tabella -->
+							<Table width="100%" busy="{FinalCollaudoDetailModel>/BusyLoadingWeightsTable}"  items="{FinalCollaudoDetailModel>/weights}" class="sapUiSmallMarginTop">
+								<columns>
+									<Column width="40%">
+										<Text text="{i18n>finalCollaudoDetail.table.section}"/>
+									</Column>
+									<Column width="20%">
+										<Text text="{i18n>finalCollaudoDetail.table.weight}"/>
+									</Column>
+									<Column width="40%">
+										<Text text="{i18n>finalCollaudoDetail.table.value}"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>section}" wrapping="true"/>
+											<Text text="{= ${FinalCollaudoDetailModel>weight} + ' %' }" wrapping="true"/>
+											<Input id="valueCollaudoWeightNumberInput" value="{FinalCollaudoDetailModel>value}"  change="onWeightValueChange" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="90%" type="Number" />
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+						<VBox width="98%" height="55%" visible="{FinalCollaudoDetailModel>/viewCustomTableVarianzaCollaudo}">
+							<!-- Tabella -->
+							<Table width="100%" busy="{FinalCollaudoDetailModel>/BusyLoadingVarianzaTable}" items="{FinalCollaudoDetailModel>/varianzaCollaudo}" class="sapUiSmallMarginTop">
+								<columns>
+									<Column width="40%">
+										<Text text="{i18n>finalCollaudoDetail.table.cluster}"/>
+									</Column>
+									<Column width="20%">
+										<Text text="{i18n>finalCollaudoDetail.table.hours}"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>cluster}" wrapping="true"/>
+											<Input id="hoursVariance" editable="false" value="{FinalCollaudoDetailModel>hours}"  width="80%" type="Number" />
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+							<viz:VizFrame
+								id="idPieChart"
+								vizType="pie"
+								width="100%"
+								height="400px">
+								<viz:dataset>
+									<viz.data:FlattenedDataset data="{FinalCollaudoDetailModel>/varianzaCollaudo}">
+										<viz.data:dimensions>
+											<viz.data:DimensionDefinition
+												name="Cluster"
+												value="{FinalCollaudoDetailModel>cluster}" />
+										</viz.data:dimensions>
+										<viz.data:measures>
+											<viz.data:MeasureDefinition
+												name="Ore"
+												value="{FinalCollaudoDetailModel>hours}" />
+										</viz.data:measures>
+									</viz.data:FlattenedDataset>
+								</viz:dataset>
+								<viz:feeds>
+									<viz.feeds:FeedItem
+										uid="size"
+										type="Measure"
+										values="Ore" />
+									<viz.feeds:FeedItem
+										uid="color"
+										type="Dimension"
+										values="Cluster" />
+								</viz:feeds>
+							</viz:VizFrame>
+						</VBox>
+						<VBox width="98%" height="55%" visible="{FinalCollaudoDetailModel>/viewCustomTableNC}">
+							<table:TreeTable
+								id="ncTreeTable"
+								width="100%"
+								busy="{FinalCollaudoDetailModel>/BusyLoadingNcTable}" 
+								rows="{
+									path: 'FinalCollaudoDetailModel>/treeData',
+									parameters: {
+										arrayNames: ['Children']
+									}
+								}"
+								selectionMode="None"
+								ariaLabelledBy="title"
+								rowSelectionChange="onRowSelectionChangeNcTreeTable"
+								enableColumnReordering="true" 
+								enableGrouping="true" 
+								selectionBehavior="RowOnly"
+								rowHeight="30px"
+								class="sapUiSmallMarginTop">
+								<table:layoutData>
+									<FlexItemData growFactor="1" baseSize="0%"/>
+								</table:layoutData>
+								<table:columns>
+
+									<table:Column width="10%" hAlign="Left">
+										<Label text="{i18n>defect.treeTable.groupOrCode}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>groupOrCode}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="10%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.material}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>material}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.priority}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>priority_description}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.user}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>user}" wrapping="false"/>
+										</table:template>
+									</table:Column> 
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.phase}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>phase}" wrapping="false"/>
+										</table:template>
+									</table:Column> 
+
+									<table:Column width="10%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.status}" />
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>status}" wrapping="false"/>
+										</table:template>
+									</table:Column> 
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.qn}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>qn_code}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="7%" hAlign="Center">
+										<Label text="{i18n>defect.treeTable.info}"/>
+										<table:template>
+											<core:Icon src="sap-icon://hint" color="#d70a32" press="onDetailsDefectPress" visible="{= ${FinalCollaudoDetailModel>level} === 2 }" />
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.owner}"/>
+										<table:template>
+											<Input value="{FinalCollaudoDetailModel>owner}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" change="onRowChanged" visible="{= ${FinalCollaudoDetailModel>level} === 2 }" />
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.due_date}"/>
+										<table:template>
+											<DatePicker value="{FinalCollaudoDetailModel>due_date}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onRowChanged" visible="{= ${FinalCollaudoDetailModel>level} === 2 }" />
+										</table:template>
+									</table:Column>
+									
+								</table:columns>
+							</table:TreeTable>
+						</VBox>
+						<VBox width="98%" height="55%" visible="{FinalCollaudoDetailModel>/viewCustomTableModifiche}">
+							<table:TreeTable
+								id="modificheTreeTable"
+								width="100%"
+								busy="{FinalCollaudoDetailModel>/BusyLoadingModificheTable}" 
+								rows="{
+									path: 'FinalCollaudoDetailModel>/treeDataModifiche',
+									parameters: {
+										arrayNames: ['children']
+									}
+								}"
+								selectionMode="None"
+								ariaLabelledBy="title"
+								rowSelectionChange="onRowSelectionChangeNcTreeTable"
+								enableColumnReordering="true" 
+								enableGrouping="true" 
+								selectionBehavior="RowOnly"
+								rowHeight="30px"
+								class="sapUiSmallMarginTop">
+								<table:layoutData>
+									<FlexItemData growFactor="1" baseSize="0%"/>
+								</table:layoutData>
+								<table:columns>
+									<table:Column width="9%">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.type}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>type}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.progEco}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>prog_eco}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.process_id}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>process_id}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.material}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>material}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.material_description}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>material_description}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.child_material}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>child_material}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.qty}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>qty}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.flux_type}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>flux_type}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.status}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>statusDescription}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.resolution}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>resolution}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.note}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>note}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.owner}"/>
+										<table:template>
+											<Input value="{FinalCollaudoDetailModel>owner}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" change="onRowChanged" visible="{= ${FinalCollaudoDetailModel>level} === 2 }" />
+										</table:template>
+									</table:Column>
+
+									<table:Column width="9%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.due_date}"/>
+										<table:template>
+											<DatePicker value="{FinalCollaudoDetailModel>due_date}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onRowChanged" visible="{= ${FinalCollaudoDetailModel>level} === 2 }" />
+										</table:template>
+									</table:Column>
+									
+								</table:columns>
+							</table:TreeTable>
+						</VBox>
+						<VBox width="98%" height="55%" visible="{FinalCollaudoDetailModel>/viewCustomTableActivities}">
+							<table:TreeTable
+								id="activitiesTreeTable"
+								width="100%"
+								busy="{FinalCollaudoDetailModel>/BusyLoadingActivitiesTable}" 
+								rows="{
+									path: 'FinalCollaudoDetailModel>/treeDataActivities',
+									parameters: {
+										arrayNames: ['children']
+									}
+								}"
+								selectionMode="None"
+								ariaLabelledBy="title"
+								rowSelectionChange="onRowSelectionChangeNcTreeTable"
+								enableColumnReordering="true" 
+								enableGrouping="true" 
+								selectionBehavior="RowOnly"
+								rowHeight="30px"
+								class="sapUiSmallMarginTop">
+								<table:layoutData>
+									<FlexItemData growFactor="1" baseSize="0%"/>
+								</table:layoutData>
+								<table:columns>
+									<table:Column width="11%">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.macrofase}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>macrofase}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.macroattivita}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>macroattivita}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.machine_type}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>machine_type}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.progressivo}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>progressivo}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.workcenter}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>workcenter}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.status}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>status}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.safety}"/>
+										<table:template>
+											<Text text="{FinalCollaudoDetailModel>safety}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.owner}"/>
+										<table:template>
+											<Input value="{FinalCollaudoDetailModel>owner}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" change="onRowChanged" visible="{= ${FinalCollaudoDetailModel>level} === 2 }" />
+										</table:template>
+									</table:Column>
+
+									<table:Column width="11%" hAlign="Center">
+										<Label text="{i18n>FinalCollaudoDetailModel.table.due_date}"/>
+										<table:template>
+											<DatePicker value="{FinalCollaudoDetailModel>due_date}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onRowChanged" visible="{= ${FinalCollaudoDetailModel>level} === 2 }"/>
+										</table:template>
+									</table:Column>
+									
+								</table:columns>
+							</table:TreeTable>
+						</VBox>
+						<VBox width="98%" height="55%" visible="{FinalCollaudoDetailModel>/viewCustomTableMancanti}">
+							<!-- Tabella -->
+							<Table width="100%" busy="{FinalCollaudoDetailModel>/BusyLoadingMancantiTable}" items="{FinalCollaudoDetailModel>/mancanti}" class="sapUiSmallMarginTop">
+								<columns>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.wbs}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.material}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.missing_component}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.component_description}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.type_mancante}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.type_cover_element}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.receipt_expected_date}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.owner}"/>
+									</Column>
+									<Column width="11%">
+										<Text text="{i18n>finalCollaudoDetail.table.due_date}"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>wbs_element}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>material}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>missing_component}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>component_description}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>type_mancante}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>type_cover_element}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>receipt_expected_date}" wrapping="true"/>
+										</cells>
+										<cells>
+											<Input value="{FinalCollaudoDetailModel>owner}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" change="onRowChanged" />
+										</cells>
+										<cells>
+											<DatePicker value="{FinalCollaudoDetailModel>due_date}" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="100%" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy" change="onRowChanged" />
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+						<VBox width="98%" height="auto" visible="{FinalCollaudoDetailModel>/viewStandard}">
+							<Table
+								width="100%" 
+								id="rightCollaudoTable"
+								items="{FinalCollaudoDetailModel>/parameteresData}"
+								mode="None"
+								class="sapUiSmallMarginTop">
+								<columns>
+									<Column width="50%">
+										<Text text="{FinalCollaudoDetailModel>/columnHeaders/parametro}" />
+									</Column>
+									<Column width="25%">
+										<Text text="{FinalCollaudoDetailModel>/columnHeaders/valore}" />
+									</Column>
+									<Column width="25%">
+										<Text text="{FinalCollaudoDetailModel>/columnHeaders/commento}" />
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem>
+										<cells>
+											<Text text="{FinalCollaudoDetailModel>description}" wrapping="true"/>
+											<!-- Mostro box Input o Select in base al dcParameterType -->
+											<HBox width="98%" renderType="Bare">
+												<Input
+													id="valueCollaudoInput"
+													value="{FinalCollaudoDetailModel>valueText}"
+													width="100%"
+													editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }"
+													visible="{= ${FinalCollaudoDetailModel>dataType} === 'TEXT' }"/>
+												<DatePicker
+													id="valueCollaudoDatePicker"
+													value="{FinalCollaudoDetailModel>valueData}"
+													width="100%"
+													displayFormat="dd/MM/yyyy"
+													valueFormat="dd/MM/yyyy"
+													editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }"
+													visible="{= ${FinalCollaudoDetailModel>dataType} === 'DATA' }"/>
+												<Input
+													id="valueCollaudoNumberInput"
+													value="{FinalCollaudoDetailModel>valueNumber}"
+													editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' &amp;&amp; ${FinalCollaudoDetailModel>/selectedGroup/group} !== '4 - ANALISI ORE COLLAUDO' }"
+													width="100%"
+													type="Number"
+													visible="{= ${FinalCollaudoDetailModel>dataType} === 'NUMBER' }"/>
+												<Select
+													id="valueCollaudoBooleanSelect"
+													width="100%"
+													editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }"
+													selectedKey="{FinalCollaudoDetailModel>valueBoolean}"
+													visible="{= ${FinalCollaudoDetailModel>dataType} === 'BOOLEAN' }"
+													change="onParameterValueChange">
+													<core:ListItem key="" text=""/>
+													<core:ListItem key="SI" text="{i18n>finalCollaudoDetail.boolean.true}"/>
+													<core:ListItem key="NO" text="{i18n>finalCollaudoDetail.boolean.false}"/>
+												</Select>
+												<ComboBox width="100%" change="onParameterValueChange" showSecondaryValues="true"
+													items="{FinalCollaudoDetailModel>listValues}" 
+													editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }"
+													selectedKey="{FinalCollaudoDetailModel>valueList}"
+													visible="{= ${FinalCollaudoDetailModel>dataType} === 'LIST' }">
+													<core:ListItem key="{FinalCollaudoDetailModel>key}" text="{FinalCollaudoDetailModel>value}" />
+												</ComboBox>    
+											</HBox>
+											<Button
+												icon="sap-icon://comment"
+												type="{= ${FinalCollaudoDetailModel>comment} === '' ? 'Transparent' : 'Emphasized' }"
+												press="onCommentPress"
+												tooltip="{i18n>finalCollaudoDetail.comment.tooltip}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</VBox>
+						<VBox width="98%" height="50%" visible="{FinalCollaudoDetailModel>/viewCustomTableOreCollaudo}">
+							<viz:VizFrame
+								id="idVizFrame"
+								vizType="stacked_column"
+								width="100%"
+								height="400px">
+								<viz:dataset>
+									<viz.data:FlattenedDataset data="{FinalCollaudoDetailModel>/resultsOreCollaudo}">
+										<viz.data:dimensions>
+											<viz.data:DimensionDefinition
+												name="Tipo"
+												value="{Type}" />
+										</viz.data:dimensions>
+										<viz.data:measures>
+											<viz.data:MeasureDefinition
+												name="Ore Extra"
+												value="{OreExtra}" />
+											<viz.data:MeasureDefinition
+												name="Ore Base"
+												value="{OreBase}" />
+										</viz.data:measures>
+									</viz.data:FlattenedDataset>
+								</viz:dataset>
+
+								<viz:feeds>
+									<viz.feeds:FeedItem
+										uid="valueAxis"
+										type="Measure"
+										values="Ore Extra,Ore Base" />
+									<viz.feeds:FeedItem
+										uid="categoryAxis"
+										type="Dimension"
+										values="Tipo" />
+									<viz.feeds:FeedItem
+										uid="color"
+										type="Measure"
+										values="Ore Extra,Ore Base" />
+								</viz:feeds>
+							</viz:VizFrame>
+						</VBox>
+						<VBox width="98%" height="85%" visible="{FinalCollaudoDetailModel>/viewCustomTableFinalCollaudo}">
+							<Title text="Riepilogo Collaudo" level="H2" class="sapUiSmallMarginBottom" />
+							<TextArea width="90%" height="90%" wrapping="Soft" class="customTextAreaFont"  editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }"  value="{FinalCollaudoDetailModel>/riepilogoText}" >
+								<layoutData>
+									<FlexItemData growFactor="1" />
+								</layoutData>
+							</TextArea>
+						</VBox>
+					</VBox>
+					
+				</HBox>
+
+				<!-- Spacer per spingere i bottoni in basso -->
+				<ToolbarSpacer/>
+
+				<!-- Bottoni in fondo a destra -->
+				<HBox justifyContent="End" class="sapUiSmallMarginBottom" alignItems="Center">
+					<Button id="downloadCollaudoPDFButton" text="{i18n>finalCollaudoDetail.btn.downloadPDF}" icon="sap-icon://download" type="Accept" press="onDownloadReportPDF" visible="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} === 'DONE' }" class="sapUiSmallMarginEnd"/>
+					<Button id="refreshCollaudoButton" text="{i18n>finalCollaudoDetail.btn.refresh}" icon="sap-icon://refresh" type="Default" press="onRefresh" visible="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" class="sapUiSmallMarginEnd"/>
+					<Button id="saveCollaudoButton" text="{i18n>finalCollaudoDetail.btn.save}" icon="sap-icon://save" type="Reject" press="onSaveButton" visible="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" class="sapUiSmallMarginEnd"/>
+					<Button id="sentToInstallationCollaudoButton" text="{i18n>finalCollaudoDetail.btn.sentToInstallation}" icon="sap-icon://paper-plane" type="Emphasized" press="onSentToInstallation" visible="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" class="sapUiSmallMarginEnd"/>
+					<Button id="generateRelationButton" text="{i18n>finalCollaudoDetail.btn.generateRelation}" icon="sap-icon://generate-shortcut" type="Emphasized" press="onGenerateRelation" visible="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" class="sapUiSmallMarginEnd"/>
+				</HBox>
+			</VBox>
+		</content>
+	</Page>
+
+	<!-- Dialog per commento -->
+	<Dialog
+		id="commentCollaudoDialog"
+		title="{i18n>comment.dialog.title}"
+		contentWidth="400px"
+		contentHeight="250px">
+		<content>
+			<VBox class="sapUiSmallMargin">
+				<Label text="{i18n>comment.dialog.label}" class="sapUiSmallMarginBottom"/>
+				<TextArea
+					id="commentCollaudoTextArea"
+					editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }"
+					rows="8"
+					maxLength="256"
+					width="100%"
+					placeholder="{i18n>comment.dialog.placeholder}"/>
+			</VBox>
+		</content>
+		<beginButton>
+			<Button text="{i18n>comment.dialog.btn.save}" visible="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" type="Emphasized" press="onSaveComment"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>comment.dialog.btn.cancel}" press="onCancelComment"/>
+		</endButton>
+	</Dialog>
+</mvc:View>

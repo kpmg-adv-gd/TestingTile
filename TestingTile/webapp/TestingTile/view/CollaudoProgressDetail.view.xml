@@ -1,0 +1,120 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.CollaudoProgressDetail" width="100%" height="100%">
+	<Page id="CollaudoProgressDetailPage" title="{i18n>collaudoProgressDetailPage.title}" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<HBox height="4%" renderType="Bare" justifyContent="Start" class="sapUiSmallMargin">
+				<HBox alignItems="Center" justifyContent="End" width="85%">
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.project}:" textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{CollaudoProgressDetailModel>/selectedCollaudoProgressRow/project}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.sfc}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{CollaudoProgressDetailModel>/selectedCollaudoProgressRow/sfc}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.order}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{CollaudoProgressDetailModel>/selectedCollaudoProgressRow/order}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.co}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{CollaudoProgressDetailModel>/selectedCollaudoProgressRow/co}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+					<HBox width="20%" height="100%" class="headerBox" renderType="Bare">
+						<Label text="{i18n>detailview.label.customer}:"  textAlign="End" vAlign="Middle" class="kpmgGDMediumlLabelInfo" />
+						<Label text="{CollaudoProgressDetailModel>/selectedCollaudoProgressRow/customer}" textAlign="Left" vAlign="Middle" class="kpmgGDMediumlLabel paddingLeft" />
+					</HBox>
+				</HBox>
+				<!-- Filtri e Bottoni sulla stessa riga -->
+				<HBox alignItems="End" justifyContent="End" width="15%">
+					<Button id="expandCollaudoProgressButton" text="{i18n>collaudoProgressDetail.btn.expandAll}" icon="sap-icon://expand-group" press="onExpandAll" class="sapUiTinyMarginEnd expandBottom"/>
+					<Button id="collapseCollaudoProgressButton" text="{i18n>collaudoProgressDetail.btn.collapseAll}" icon="sap-icon://collapse-group" press="onCollapseAll" class="sapUiTinyMarginEnd collapseBottom"/>
+				</HBox>
+			</HBox>
+			<VBox height="85%" renderType="Bare">
+				<!-- TreeTable -->
+				<table:TreeTable
+					id="CollaudoProgressTreeTable"
+					width="100%"
+					busy="{CollaudoProgressDetailModel>/BusyLoadingOpTable}" 
+					rows="{
+						path: 'CollaudoProgressDetailModel>/treeData',
+						parameters: {
+							arrayNames: ['children']
+						}
+					}"
+					selectionMode="Single"
+					ariaLabelledBy="title"
+					rowSelectionChange="onRowSelectionChange"
+					enableColumnReordering="true" 
+					enableGrouping="true" 
+					selectionBehavior="RowOnly"
+					visibleRowCountMode="Auto"
+					visibleRowCount="10"
+					rowHeight="45px"
+					class="kpmgGDTable smallFont smallPaddingTable">
+					<table:layoutData>
+						<FlexItemData growFactor="1" baseSize="0%"/>
+					</table:layoutData>
+					<table:columns>
+						<table:Column width="31%">
+							<Label text="{i18n>collaudoProgressDetail.table.description}"/>
+							<table:template>
+								<Text text="{CollaudoProgressDetailModel>description}" tooltip="{CollaudoProgressDetailModel>description}" wrapping="true" maxLines="2"/>
+							</table:template>
+						</table:Column>
+						
+						<table:Column filterProperty="machineType" width="5%" hAlign="Center" >
+							<Label text="{i18n>collaudoProgressDetail.table.machineType}"/>
+							<table:template>
+								<Text text="{CollaudoProgressDetailModel>machineType}" wrapping="false"/>
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="6%" hAlign="Center">
+							<Label text="{i18n>collaudoProgressDetail.table.wc}"/>
+							<table:template>
+									<Text text="{CollaudoProgressDetailModel>workcenter}" wrapping="false"/>
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="5%" hAlign="Center">
+							<Label text="{i18n>collaudoProgressDetail.table.nc}"/>
+							<table:template>
+								<core:Icon src="sap-icon://high-priority" color="#d70a32"  visible="{= ${CollaudoProgressDetailModel>nc} !== false }" />
+							</table:template>
+						</table:Column>
+						
+						<table:Column width="7%" hAlign="Center">
+							<Label text="{i18n>collaudoProgressDetail.table.status}"/>
+							<table:template>
+								<core:Icon src="{path: 'CollaudoProgressDetailModel>status',formatter: '.statusIcon'}" color="{path: 'CollaudoProgressDetailModel>status', formatter: '.statusColor'}" class="largeIcon" />
+							</table:template>
+						</table:Column>
+
+						<table:Column width="15%" hAlign="Center">
+							<Label text="{i18n>collaudoProgressDetail.table.start}"/>
+							<table:template>
+								<Text text="{CollaudoProgressDetailModel>start}" tooltip="{CollaudoProgressDetailModel>start}" wrapping="true" maxLines="2"/>
+							</table:template>
+						</table:Column>
+
+						<table:Column width="15%" hAlign="Center">
+							<Label text="{i18n>collaudoProgressDetail.table.complete}"/>
+							<table:template>
+								<Text text="{CollaudoProgressDetailModel>complete}"  tooltip="{CollaudoProgressDetailModel>complete}" wrapping="true" maxLines="2"/>
+							</table:template>
+						</table:Column>
+
+						<table:Column width="16%" hAlign="Center">
+							<Label text="{i18n>collaudoProgressDetail.table.progressPercentage}"/>
+							<table:template>
+                                <ProgressIndicator percentValue="{CollaudoProgressDetailModel>percentage}" displayValue="{= ${CollaudoProgressDetailModel>percentage} + '%'}" state="Success" showValue="true" visible="{= ${CollaudoProgressDetailModel>level} === 1 }" width="100%"/>
+							</table:template>
+						</table:Column>
+						
+					</table:columns>
+				</table:TreeTable>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

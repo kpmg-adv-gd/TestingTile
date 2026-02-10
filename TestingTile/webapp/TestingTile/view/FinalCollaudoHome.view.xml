@@ -1,0 +1,131 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table" controllerName="kpmg.custom.testingTile.TestingTile.TestingTile.controller.FinalCollaudoHome" width="100%" height="100%">
+		<Page id="mainFinalCollaudoPage" title="{i18n>finalCollaudo.title}">
+			<content>
+				<!-- Header con filtri -->
+				<Panel id="filterFinalCollaudoHomePanel" width="100%" height="100%" expandable="false" expanded="true" backgroundDesign="Transparent">
+					<content>
+						<VBox height="10%" renderType="Bare" class="sapUiSmallMargin">
+							<!-- Filtri e Bottoni sulla stessa riga -->
+							<HBox alignItems="End" justifyContent="SpaceBetween" width="100%">
+								<!-- Filtri -->
+								<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>finalCollaudo.filter.project}" />
+									<ComboBox id="projectFinalCollaudoFilter" width="100%" placeholder="{i18n>finalCollaudo.filter.project.placeholder}" items="{finalCollaudoModel>/projects}">
+										<core:ListItem key="{finalCollaudoModel>}" text="{finalCollaudoModel>}" />
+									</ComboBox>
+								</VBox>
+
+
+								<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>finalCollaudo.filter.sfc}"/>
+									<ComboBox id="sfcFinalCollaudoFilter" width="100%" placeholder="{i18n>finalCollaudo.filter.sfc.placeholder}" items="{finalCollaudoModel>/sfcs}" >
+										<core:ListItem key="{finalCollaudoModel>}" text="{finalCollaudoModel>}" />
+									</ComboBox>
+								</VBox>
+
+
+								<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>finalCollaudo.filter.co}"/>
+									<ComboBox id="coFinalCollaudoFilter" width="100%" placeholder="{i18n>finalCollaudo.filter.co.placeholder}" items="{finalCollaudoModel>/cos}" >
+										<core:ListItem key="{finalCollaudoModel>}" text="{finalCollaudoModel>}" />
+									</ComboBox>
+								</VBox>
+
+                                <VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
+									<Label text="{i18n>finalCollaudo.filter.customer}"/>
+									<ComboBox id="customerFinalCollaudoFilter" width="100%" placeholder="{i18n>finalCollaudo.filter.customer.placeholder}" items="{finalCollaudoModel>/customers}" >
+										<core:ListItem key="{finalCollaudoModel>}" text="{finalCollaudoModel>}" />
+									</ComboBox>
+								</VBox>
+								
+								<!-- Bottoni allineati verticalmente -->
+								<VBox width="20%">
+									<HBox width="100%" justifyContent="Center" class="sapUiTinyMarginBottom">
+										<Button id="searchFinalCollaudoButton" text="{i18n>mainview.btn.search}" icon="sap-icon://search" press="onSearchPress" type="Emphasized" class="sapUiTinyMarginEnd searchBottom"/>
+										<Button id="clearFinalCollaudoButton" text="{i18n>mainview.btn.clear}" icon="sap-icon://clear-filter" press="onClearPress" class="clearBottom" />
+									</HBox>
+                                    <HBox justifyContent="Center">
+                                        <CheckBox id="sentToInstallationFinalCollaudo" text="Sent To Installation" />
+                                        <CheckBox id="showAllfinalCollaudo" text="Show all" />
+                                    </HBox>
+								</VBox>
+							</HBox>
+						</VBox>
+						<!-- Table -->
+						<VBox height="85.5%" renderType="Bare">
+							<table:Table
+								id="finalCollaudoTable"
+								width="100%"
+								busy="{finalCollaudoModel>/BusyLoadingOpTable}" 
+								rows="{finalCollaudoModel>/tableData}"
+								selectionMode="Single"
+								ariaLabelledBy="title"
+								rowSelectionChange="onRowSelectionChange"
+								enableColumnReordering="true" 
+								enableGrouping="true" 
+								selectionBehavior="RowOnly"
+								visibleRowCountMode="Auto"
+								visibleRowCount="10" 
+								rowHeight="45px"
+								class="kpmgGDTable smallPaddingTable">
+								<table:layoutData>
+									<FlexItemData growFactor="1" baseSize="0%"/>
+								</table:layoutData>
+								<table:columns>
+									<table:Column width="16%">
+										<Label text="{i18n>finalCollaudo.table.project}"/>
+										<table:template>
+											<Text text="{finalCollaudoModel>project}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="16%">
+										<Label text="{i18n>finalCollaudo.table.sfc}"/>
+										<table:template>
+											<Text text="{finalCollaudoModel>sfc}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="14%">
+										<Label text="{i18n>finalCollaudo.table.co}"/>
+										<table:template>
+											<Text text="{finalCollaudoModel>co}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="14%">
+										<Label text="{i18n>finalCollaudo.table.customer}"/>
+										<table:template>
+											<Text text="{finalCollaudoModel>customer}" wrapping="false"/>
+										</table:template>
+									</table:Column>
+									
+									<table:Column width="8%" hAlign="Center">
+										<Label text="{i18n>finalCollaudo.table.status}" />
+										<table:template>
+												<core:Icon src="{path: 'finalCollaudoModel>sfcStatus',formatter: '.statusIcon'}" color="{path: 'finalCollaudoModel>sfcStatus', formatter: '.statusColor'}" class="largeIcon" />
+										</table:template>
+									</table:Column>
+
+                                    <table:Column width="8%" hAlign="Center">
+										<Label text="{i18n>finalCollaudo.table.sentToInstallation}"/>
+										<table:template >
+											<CheckBox selected="{finalCollaudoModel>sentToInstallation}" editable="false" />
+										</table:template>
+									</table:Column>
+
+                                    <table:Column width="8%" hAlign="Center" >
+										<Label text="{i18n>finalCollaudo.table.reportStatus}"/>
+										<table:template>
+											<core:Icon src="{path: 'finalCollaudoModel>reportStatus',formatter: '.relazioneIcon'}" color="{path: 'finalCollaudoModel>reportStatus', formatter: '.relazioneColor'}" class="largeIcon" />
+										</table:template>
+									</table:Column>
+
+								</table:columns>
+							</table:Table>
+						</VBox>
+					</content>
+				</Panel>
+			</content>
+		</Page>
+</mvc:View>
