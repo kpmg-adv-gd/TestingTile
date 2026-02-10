@@ -177,7 +177,8 @@ sap.ui.define([
                             workcenter: node.workcenter,
                             active: node.active,
                             originalOperationActivity: parentLev1.operationActivity,
-                            operationActivity: `${parentLev1.operationActivity}${sSuffix}`
+                            operationActivity: `${parentLev1.operationActivity}${sSuffix}`,
+                            descriptionLev1: parentLev1.description
                         });
                     }
 

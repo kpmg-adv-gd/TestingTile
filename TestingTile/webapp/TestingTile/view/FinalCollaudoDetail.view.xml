@@ -304,7 +304,7 @@
 									<table:Column width="9%" hAlign="Center">
 										<Label text="{i18n>FinalCollaudoDetailModel.table.qty}"/>
 										<table:template>
-											<Text text="{FinalCollaudoDetailModel>qty}" wrapping="false"/>
+											<Text text="{FinalCollaudoDetailModel>quantity}" wrapping="false"/>
 										</table:template>
 									</table:Column>
 

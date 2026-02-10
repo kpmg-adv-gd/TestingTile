@@ -203,6 +203,7 @@ sap.ui.define([
 					that.oFinalCollaudoDetailModel.setProperty("/parameteresData", []);
 					that.loadGroups(selected, false);
 					that.oFinalCollaudoDetailModel.setProperty("/selectedRow/reportStatus", "IN_WORK");
+					that.loadCustomWeigths();
 					sap.ui.core.BusyIndicator.hide();
 				}
 			}

@@ -46,7 +46,7 @@
 									</HBox>
                                     <HBox justifyContent="Center">
 										<CheckBox id="sentToInstallationCollaudoProgress" text="Sent To Installation" />
-										<CheckBox id="showAllCollaudoProgress" text="Show all" />
+										<CheckBox id="showAllCollaudoProgress" text="Show all" visible="false"/>
                                     </HBox>
 								</VBox>
 							</HBox>
@@ -109,7 +109,7 @@
 									</table:Column>
 
 									<table:Column width="10%" hAlign="Center">
-										<Label text="{i18n>CollaudoProgress.table.status}"/>
+										<Label text="{i18n>CollaudoProgress.table.SFCstatus}"/>
 										<table:template>
 											<core:Icon src="{path: 'CollaudoProgressModel>sfcStatus',formatter: '.statusIcon'}" color="{path: 'CollaudoProgressModel>sfcStatus', formatter: '.statusColor'}" class="largeIcon" />
 										</table:template>
