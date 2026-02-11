@@ -477,7 +477,7 @@ sap.ui.define([
 
 			let params = {
 				plant: plant,
-				project: that.oFinalCollaudoDetailModel.getProperty("/selectedRow").project
+				sfc: that.oFinalCollaudoDetailModel.getProperty("/selectedRow").sfc
 			};
 
 			// Callback di successo

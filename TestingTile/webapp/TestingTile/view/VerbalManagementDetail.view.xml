@@ -88,7 +88,7 @@
 						<table:Column width="10%" hAlign="Center">
 							<Label text="{i18n>verbalManagementDetail.table.safety}"/>
 							<table:template>
-								<CheckBox selected="{verbalManagementDetailModel>safety}" visible="{= ${verbalManagementDetailModel>level} === 2}" enabled="{= ${verbalManagementDetailModel>/editMode} &amp;&amp; ${verbalManagementDetailModel>safety} === false }" text="" />
+								<CheckBox selected="{verbalManagementDetailModel>safety}" visible="{= ${verbalManagementDetailModel>level} === 2}" enabled="false" text="" />
 							</table:template>
 						</table:Column>
 						
@@ -106,7 +106,7 @@
 				<!-- Filtri e Bottoni sulla stessa riga -->
 				<HBox alignItems="End" justifyContent="End" width="100%" class="mediumMarginBottom">
 					<Button id="saveVerbalManagementButton" text="{i18n>common.save}" type="Emphasized"  press="onSave" class="sapUiTinyMarginEnd saveButton"/>
-					<Button id="releaseVerbalManagementButton" text="{i18n>common.release}" type="Emphasized"  press="onRelease" class="releaseButton"/>
+					<Button id="releaseVerbalManagementButton" text="{i18n>common.release}" type="Emphasized"  press="onRelease" class="releaseButton" visible="{= ${verbalManagementDetailModel>/selectedVerbalManagementRow/status} !== 'RELEASED' }"/>
 				</HBox>
 			</VBox>
 		</content>

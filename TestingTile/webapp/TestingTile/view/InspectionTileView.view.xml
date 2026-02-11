@@ -104,15 +104,10 @@
 								</table:template>
 							</table:Column>
 							
-							<table:Column width="10%">
-								<Label text=""/>
+							<table:Column width="8%" hAlign="Center" >
+								<Label text="PDF"/>
 								<table:template>
-									<Button
-										icon="sap-icon://download"
-										visible="{= ${inspectionModel>reportStatus} === 'DONE' }"
-										type="Accept"
-										press="onDownloadReportPDF"
-										class="sapUiSmallMarginEnd"/>
+									<core:Icon src="sap-icon://download" color="green" class="largeIcon" visible="{= ${inspectionModel>reportStatus} === 'DONE' }" press="onDownloadReportPDF" />
 								</table:template>
 							</table:Column>
 							

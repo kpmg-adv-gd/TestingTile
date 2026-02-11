@@ -103,7 +103,8 @@ sap.ui.define([
                 sfc: sfc,
                 customer: customer,
                 sentToInstallation: sentToInstallation,
-                showAll: showAll
+                showAll: showAll,
+                tab: "finalCollaudo"
             };
 
             var successCallback = function(response) {

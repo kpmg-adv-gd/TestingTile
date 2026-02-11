@@ -102,7 +102,8 @@ sap.ui.define([
                 sfc: sfc,
                 customer: customer,
                 sentToInstallation,
-                showAllSfcStatus: showAllSfcStatus
+                showAllSfcStatus: showAllSfcStatus,
+                tab: "progressCollaudo"
             };
 
             var successCallback = function(response) {

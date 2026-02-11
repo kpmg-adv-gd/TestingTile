@@ -119,7 +119,7 @@ sap.ui.define([
         loadData: function(){
             var that=this;
             let project = that.byId("projectsafetyApprovalFilter").getSelectedKey();
-            let order = that.byId("orderSafetyApprovalFilter").getSelectedKey();
+            let sfc = that.byId("orderSafetyApprovalFilter").getSelectedKey();
             let co = that.byId("coSafetyApprovalFilter").getSelectedKey();
             let startDate = !!that.byId("startDateSafetyApprovalFilter").getValue() ? new Date(that.byId("startDateSafetyApprovalFilter").getValue()) : "";
             let endDate = !!that.byId("endDateSafetyApprovalFilter").getValue() ? new Date(that.byId("endDateSafetyApprovalFilter").getValue()) : "";
@@ -135,7 +135,7 @@ sap.ui.define([
                 plant: plant,
                 project: project,
                 co: co,
-                order: order,
+                sfc: sfc,
                 startDate: startDate,
                 endDate: endDate,
                 showAll: showAll
