@@ -674,7 +674,17 @@ sap.ui.define([
 		},
 		onNavBack: function () {
 			var that = this;			
-			that.navToFinalCollaudoHomeView(that.oNavFinalCollaudoContainerName);
+			sap.m.MessageBox.confirm(
+					that.getI18n("msg.navBack.confirm"),
+					{
+						title: that.getI18n("msg.navBack.title"),
+						onClose: function (oAction) {
+							if (oAction === sap.m.MessageBox.Action.OK) {
+								that.navToFinalCollaudoHomeView(that.oNavFinalCollaudoContainerName);
+							}
+						}
+					}
+				);
 		},
 		onCommentPress: function (oEvent) {
 			var selectedObject = oEvent.getSource().getBindingContext("FinalCollaudoDetailModel").getObject();

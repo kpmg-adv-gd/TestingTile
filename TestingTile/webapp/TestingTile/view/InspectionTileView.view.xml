@@ -103,6 +103,19 @@
 									<Text text="{inspectionModel>user}" wrapping="false"/>
 								</table:template>
 							</table:Column>
+							
+							<table:Column width="10%">
+								<Label text=""/>
+								<table:template>
+									<Button
+										icon="sap-icon://download"
+										visible="{= ${inspectionModel>reportStatus} === 'DONE' }"
+										type="Accept"
+										press="onDownloadReportPDF"
+										class="sapUiSmallMarginEnd"/>
+								</table:template>
+							</table:Column>
+							
 						</table:columns>
 					</table:TreeTable>
 				</VBox>

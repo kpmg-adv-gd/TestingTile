@@ -74,7 +74,7 @@ sap.ui.define([
         // Espandi tutti i nodi
         onExpandAll: function() {
             var oTreeTable = this.getView().byId("verbalManagementTreeTable");
-            oTreeTable.expandToLevel(10);
+            oTreeTable.expandToLevel(1);
         },
         // Collassa tutti i nodi
         onCollapseAll: function() {

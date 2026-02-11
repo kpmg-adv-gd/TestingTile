@@ -88,7 +88,7 @@
 						<table:Column width="10%" hAlign="Center">
 							<Label text="{i18n>verbalManagementDetail.table.safety}"/>
 							<table:template>
-								<CheckBox selected="{verbalManagementDetailModel>safety}" visible="{= ${verbalManagementDetailModel>level} === 2}" enabled="{verbalManagementDetailModel>/editMode}" text="" />
+								<CheckBox selected="{verbalManagementDetailModel>safety}" visible="{= ${verbalManagementDetailModel>level} === 2}" enabled="{= ${verbalManagementDetailModel>/editMode} &amp;&amp; ${verbalManagementDetailModel>safety} === false }" text="" />
 							</table:template>
 						</table:Column>
 						
