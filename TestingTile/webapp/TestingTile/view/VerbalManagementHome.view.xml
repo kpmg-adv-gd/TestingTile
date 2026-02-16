@@ -44,7 +44,7 @@
 										<Button id="clearVerbalManagementButton" text="{i18n>mainview.btn.clear}" icon="sap-icon://clear-filter" press="onClearPress" class="clearBottom" />
 									</HBox>
                                         <HBox justifyContent="Center">
-                                            <CheckBox id="showAllVerbalManagement" text="Show all" />
+                                            <CheckBox id="showAllVerbalManagement" select="loadData" text="Show all" />
                                         </HBox>
 								</VBox>
 							</HBox>

@@ -10,6 +10,7 @@ sap.ui.define([
     return BaseController.extend("kpmg.custom.testingTile.TestingTile.TestingTile.controller.InspectionDetailView", {
         oDetailModel: new JSONModel(),
         oNavInspectionContainerName: "navContainerInspection",
+		lastRefresh: false,
         onInit: function () {
             var that=this;
             that.getView().setModel(that.oDetailModel, "DetailModel");
@@ -17,19 +18,7 @@ sap.ui.define([
 			this._currentCommentItem = null;
         },
 
-        onAfterRendering: function () {
-            var that = this;
-        },
-
-        // Formatter per data
-        formatDate: function(date) {
-            if (!date) return "";
-            var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance({
-                pattern: "dd/MM/yyyy HH:mm"
-            });
-            return oDateFormat.format(new Date(date));
-        },
-        onNavigateTo: function () {
+        onNavigateTo: function (oEvent) {
 			var that = this;
 			var selected = that.getInfoModel().getProperty("/selectedRow");
 			that.oDetailModel.setProperty("/selectedRow", selected)
@@ -44,9 +33,12 @@ sap.ui.define([
 			that.oDetailModel.setProperty("/viewVotoSezione", false);
 			that.oDetailModel.setProperty("/viewCustomTableResults", false);
 			that.oDetailModel.setProperty("/selectedGroup", undefined);
-			that.loadGroups(selected, false);
+			that.oDetailModel.setProperty("/oldWID", that.getInfoModel().getProperty("/selectedRow/idReportWeight"));
+			that.loadGroups(selected, false, true);
+			that.loadCustomTableNC();
 		},
-        // Carico Data Collection - tabella sx
+
+		// Carico Data Collection - tabella sx
 		loadGroups: function (selected, refresh, first) {
 			var that = this;
 			let BaseProxyURL = that.getInfoModel().getProperty("/BaseProxyURL");
@@ -246,6 +238,7 @@ sap.ui.define([
 
 			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, false);
 		},
+
 		onRefreshPress: function () {
 			var that = this;
 			sap.m.MessageBox.confirm(
@@ -360,7 +353,6 @@ sap.ui.define([
 					that.oDetailModel.setProperty("/oldWID", that.getInfoModel().getProperty("/selectedRow/idReportWeight"));
 					that.loadGroups(selected, false);
 					that.oDetailModel.setProperty("/selectedRow/reportStatus", "IN_WORK");
-					sap.ui.core.BusyIndicator.hide();
 				}else{
 					that.generateInspection();
 				}
@@ -371,11 +363,9 @@ sap.ui.define([
 				var message = "";
 				for (var i = 0;i<error.length;i++) message += "\n" + error[i].dc + ":" +  error[i].message;
 				that.showErrorMessageBox(message);
-				sap.ui.core.BusyIndicator.hide();
 			};
 
-			sap.ui.core.BusyIndicator.show(0);
-			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, false);
+			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, true);
 		},
 
 		onGenerateInspectionPress: function () {
@@ -423,13 +413,11 @@ sap.ui.define([
 				that.oDetailModel.setProperty("/viewVotoSezione", false);
 				that.oDetailModel.setProperty("/selectedRow/reportStatus", "DONE");
 				that.loadGroups(selected, false);
-				sap.ui.core.BusyIndicator.hide();
 			}
 
 			// Callback di errore
 			var errorCallback = function (error) {
 				that.showErrorMessageBox(error);
-				sap.ui.core.BusyIndicator.hide();
 			};
 
 			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, true);
@@ -474,12 +462,27 @@ sap.ui.define([
 			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, false);
 		
 		},
-
+		
 		onNavBack: function () {
 			var that = this;			
 			var reportStatus = that.oDetailModel.getProperty("/selectedRow").reportStatus;
+			that.getInfoModel().setProperty("/selectedRow/idReportWeight", that.oDetailModel.getProperty("/oldWID"))
 			if (reportStatus == "DONE") {
+				sap.ui.getCore().getEventBus().publish("TileViewMessage", "refreshModel", null);
 				that.navToInspectionTileView(that.oNavInspectionContainerName);
+			}else{
+				sap.m.MessageBox.confirm(
+					that.getI18n("msg.navBack.confirm"),
+					{
+						title: that.getI18n("msg.navBack.title"),
+						onClose: function (oAction) {
+							if (oAction === sap.m.MessageBox.Action.OK) {
+								sap.ui.getCore().getEventBus().publish("TileViewMessage", "refreshModel", null);
+								that.navToInspectionTileView(that.oNavInspectionContainerName);
+							}
+						}
+					}
+				);
 			}
 		},
     });

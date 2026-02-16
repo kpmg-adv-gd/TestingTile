@@ -59,7 +59,7 @@ sap.ui.define([
             oView.byId("coVerbalManagementFilter").setSelectedKey('');
             oView.byId("orderVerbalManagementFilter").setSelectedKey('');
             oView.byId("customerVerbalManagementFilter").setSelectedKey('');
-            oView.byId("showAllVerbalManagement").setValue(false);
+            oView.byId("showAllVerbalManagement").setSelected(false);
             
             var oTable = oView.byId("verbalManagementTable");
             var oBinding = oTable.getBinding("rows");

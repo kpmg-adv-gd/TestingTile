@@ -476,3 +476,14 @@
 .sapMPIBar {
     transition: none !important;
 }
+
+.rteWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#rteRiepilogo {
+    flex: 1 1 auto; /* fa crescere l'RTE */
+    height: 100% !important;
+}

@@ -45,8 +45,8 @@
 										<Button id="clearFinalCollaudoButton" text="{i18n>mainview.btn.clear}" icon="sap-icon://clear-filter" press="onClearPress" class="clearBottom" />
 									</HBox>
                                     <HBox justifyContent="Center">
-                                        <CheckBox id="sentToInstallationFinalCollaudo" text="Sent To Installation" />
-                                        <CheckBox id="showAllfinalCollaudo" text="Show all" />
+                                        <CheckBox id="sentToInstallationFinalCollaudo" select="loadData" text="Sent To Installation" />
+                                        <CheckBox id="showAllfinalCollaudo" select="loadData" text="Show all" />
                                     </HBox>
 								</VBox>
 							</HBox>
