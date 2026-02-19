@@ -82,8 +82,8 @@
 									<ColumnListItem>
 										<cells>
 											<Text text="{FinalCollaudoDetailModel>section}" wrapping="true"/>
-											<Text text="{= ${FinalCollaudoDetailModel>weight} + ' %' }" wrapping="true"/>
-											<Input id="valueCollaudoWeightNumberInput" value="{FinalCollaudoDetailModel>value}"  change="onWeightValueChange" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' }" width="90%" type="Number" />
+											<Text text="{= ${FinalCollaudoDetailModel>weight} + ' %' }" visible="{= ${FinalCollaudoDetailModel>section} !== &quot;Risultato dell'ispezione&quot; }" wrapping="true"/>
+											<Input id="valueCollaudoWeightNumberInput" value="{FinalCollaudoDetailModel>value}"  change="onWeightValueChange" editable="{= ${FinalCollaudoDetailModel>/selectedRow/reportStatus} !== 'DONE' &amp;&amp; ${FinalCollaudoDetailModel>section} !== &quot;Risultato dell'ispezione&quot; }" width="90%" type="Number" />
 										</cells>
 									</ColumnListItem>
 								</items>
