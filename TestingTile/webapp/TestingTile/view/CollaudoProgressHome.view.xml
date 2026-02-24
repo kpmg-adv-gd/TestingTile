@@ -45,8 +45,8 @@
 										<Button id="clearCollaudoProgressButton" text="{i18n>mainview.btn.clear}" icon="sap-icon://clear-filter" press="onClearPress" class="clearBottom" />
 									</HBox>
                                     <HBox justifyContent="Center">
-										<CheckBox id="sentToInstallationCollaudoProgress" text="Sent To Installation" />
-										<CheckBox id="showAllCollaudoProgress" text="Show all" visible="false"/>
+										<CheckBox id="sentToInstallationCollaudoProgress" select="loadData" text="Sent To Installation" />
+										<CheckBox id="showAllCollaudoProgress" select="loadData" text="Show all" visible="false"/>
                                     </HBox>
 								</VBox>
 							</HBox>

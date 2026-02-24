@@ -44,11 +44,20 @@ sap.ui.define([
 			// palette personalizzata garfico a torta
 			that.byId("idPieChart").setVizProperties({
 				plotArea: {
-					colorPalette: ["#0A6ED1", "#A57225", "#F2C80F", "#2B9EB3", "#D0011B"] // aggiungi un colore per ogni cluster
+					colorPalette: ["#0A6ED1", "#A57225", "#F2C80F", "#2B9EB3", "#D0011B"], // colori personalizzati
+					dataLabel: {
+						visible: true,
+						type: "valueAndPercent",
+						formatString: "##0%", // <-- mostra percentuale corretta moltiplicata per 100
+						hideWhenOverlap: true
+					}
 				},
 				title: {
 					visible: true,
 					text: "Distribuzione Ore per Cluster"
+				},
+				legend: {
+					visible: true
 				}
 			});
 		},
@@ -80,7 +89,6 @@ sap.ui.define([
 			that.oFinalCollaudoDetailModel.setProperty("/viewCustomTableActivities", false);
 			that.oFinalCollaudoDetailModel.setProperty("/viewCustomTableOreCollaudo", false);
 			that.oFinalCollaudoDetailModel.setProperty("/selectedGroup", undefined);
-			that.oFinalCollaudoDetailModel.setProperty("/riepilogoText", "Data:\n\nInvitati:\n\nPresenti:");
 			that.loadAllData(false);
 		},
 		loadAllData(refreshGroups){
@@ -88,11 +96,16 @@ sap.ui.define([
 			var selected = that.oFinalCollaudoDetailModel.getProperty("/selectedRow");
 			that.loadGroups(selected, refreshGroups);
 			that.loadVarianzaCollaudoData();
-			that.loadCustomTableMancanti();
-			that.loadCustomTreeTableDefects();
-			that.loadCustomTreeTableActivities();
-			that.loadCustomTreeTableModifiche();
 			that.loadCustomWeigths();
+			that.loadRiepilogoText();
+			if(selected.reportStatus !== "DONE"){
+				that.loadCustomTreeTableDefects();
+				that.loadCustomTableMancanti();
+				that.loadCustomTreeTableActivities();
+				that.loadCustomTreeTableModifiche();
+			} else {
+				that.loadFreezeData();
+			}
 		},
 		onRefresh: function(){
 			var that=this;
@@ -176,6 +189,7 @@ sap.ui.define([
 			var plant = that.getInfoModel().getProperty("/plant");
 			var selected = that.oFinalCollaudoDetailModel.getProperty("/selectedRow");
 			var dataCollections = that.oFinalCollaudoDetailModel.getProperty("/groupsData");
+			var riepilogoText = that.oFinalCollaudoDetailModel.getProperty("/riepilogoText");
 
 			let params = {
 				plant: plant,
@@ -189,7 +203,8 @@ sap.ui.define([
 				modifiche: updatedTreeDataModifiche,
 				mancanti: updatedDataMancanti,
 				activities: updatedTreeDataActivities,
-				difetti: updatedTreeDataDefects
+				difetti: updatedTreeDataDefects,
+				riepilogoText: riepilogoText
 			};
 
 			// Callback di successo
@@ -262,6 +277,13 @@ sap.ui.define([
 			let user = that.getInfoModel().getProperty("/user_id");
 			let order = that.oFinalCollaudoDetailModel.getProperty("/selectedRow").order;
 			let sfc = that.oFinalCollaudoDetailModel.getProperty("/selectedRow").sfc;
+			let project = that.oFinalCollaudoDetailModel.getProperty("/selectedRow").project
+
+			let treeDefects = that.oFinalCollaudoDetailModel.getProperty("/treeData");
+			let treeModifiche = that.oFinalCollaudoDetailModel.getProperty("/treeDataModifiche");
+			let treeActivities = that.oFinalCollaudoDetailModel.getProperty("/treeDataActivities");
+			let mancanti = that.oFinalCollaudoDetailModel.getProperty("/mancanti");
+
 			let pdfData = that.preparePDFData();
 
 			var customFieldsUpdate = [
@@ -275,8 +297,13 @@ sap.ui.define([
 				plant: plant,
 				order: order,
 				sfc: sfc,
+				project: project,
 				customFieldsUpdate: customFieldsUpdate,
-				pdfData: pdfData
+				pdfData: pdfData,
+				treeDefects: treeDefects,
+				treeModifiche: treeModifiche,
+				treeActivities: treeActivities,
+				mancanti: mancanti
 			};
 
 			// Callback di successo
@@ -622,6 +649,35 @@ sap.ui.define([
 
 			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, false);
 		},
+		loadRiepilogoText: function(){
+			var that=this;
+			
+			let order = that.getInfoModel().getProperty("/selectedFinalCollaudoRow").order;
+
+			let BaseProxyURL = that.getInfoModel().getProperty("/BaseProxyURL");
+			let pathOrderBomApi = "/api/getRiepilogoTextFinalCollaudo";
+			let url = BaseProxyURL + pathOrderBomApi;
+
+			var plant = that.getInfoModel().getProperty("/plant");
+			var key="RIEPILOGO_FINAL_COLLAUDO_"+order;
+
+			let params = {
+				plant: plant,
+				key: key
+			};
+
+			// Callback di successo
+			var successCallback = function (response) {
+				that.oFinalCollaudoDetailModel.setProperty("/riepilogoText", response.value);
+			};
+
+			// Callback di errore
+			var errorCallback = function (error) {
+				that.showErrorMessageBox(error);
+			};
+
+			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, false);
+		},
 		onWeightValueChange:function(oEvent){
 			var that=this;
 			const oCtx = oEvent.getSource().getBindingContext("FinalCollaudoDetailModel");
@@ -719,6 +775,56 @@ sap.ui.define([
             let defect = oEvent.getSource().getParent().getBindingContext("FinalCollaudoDetailModel").getObject();
             that.ViewDefectPopup.open(that.getView(), that, defect);
         },
+		loadFreezeData: function(){
+			var that=this;
+
+			that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingNcTable",true);
+			that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingModificheTable",true);
+			that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingActivitiesTable",true);
+			that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingMancantiTable",true);
+
+			let BaseProxyURL = that.getInfoModel().getProperty("/BaseProxyURL");
+			let pathOrderBomApi = "/db/getZFinalCollaudoTestingSnapshot";
+			let url = BaseProxyURL + pathOrderBomApi;
+			
+			let plant = that.getInfoModel().getProperty("/plant");
+			let project = that.getInfoModel().getProperty("/selectedFinalCollaudoRow").project;
+			let order = that.oFinalCollaudoDetailModel.getProperty("/selectedRow").order;
+			let sfc = that.oFinalCollaudoDetailModel.getProperty("/selectedRow").sfc;
+
+			let params = {
+				plant: plant,
+				project: project,
+				order: order,
+				sfc: sfc
+			};
+
+			// Callback di successo
+			var successCallback = function (response) {
+				if(!!response && response.length > 0){
+					let snapshotData = response[0].snapshot_data;
+					that.oFinalCollaudoDetailModel.setProperty("/treeData", snapshotData.treeDataDefects);
+					that.oFinalCollaudoDetailModel.setProperty("/treeDataModifiche", snapshotData.treeDataModifiche);
+					that.oFinalCollaudoDetailModel.setProperty("/treeDataActivities", snapshotData.treeDataActivities);
+					that.oFinalCollaudoDetailModel.setProperty("/mancanti", snapshotData.mancanti);
+				}
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingNcTable",false);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingModificheTable",false);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingActivitiesTable",false);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingMancantiTable",false);
+			}
+			// Callback di errore
+			var errorCallback = function (error) {
+				that.oFinalCollaudoDetailModel.setProperty("/mancanti", []);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingNcTable",false);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingModificheTable",false);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingActivitiesTable",false);
+				that.oFinalCollaudoDetailModel.setProperty("/BusyLoadingMancantiTable",false);
+				that.showErrorMessageBox(error);
+			};
+
+			CommonCallManager.callProxy("POST", url, params, true, successCallback, errorCallback, that, true, false);
+		},
 		_collectDirtyRows: function (aNodes, oParentContext = {}, aResult = []) {
 			aNodes.forEach(oNode => {
 
