@@ -168,7 +168,7 @@ sap.ui.define([
 
 			let params = {
 				plant: plant,
-				report: "Testing",
+				report: "Assembly",
 			};
 
 			// Callback di successo
