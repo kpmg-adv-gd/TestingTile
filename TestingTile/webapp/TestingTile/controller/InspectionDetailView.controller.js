@@ -156,7 +156,10 @@ sap.ui.define([
 			let pathOrderBomApi = "/db/getReportWeight";
 			let url = BaseProxyURL + pathOrderBomApi;
 
+			var plant = that.getInfoModel().getProperty("/plant");
+			
 			let params = {
+				plant: plant,
 				report: "Assembly",
 			};
 
