@@ -9,7 +9,7 @@
 						<VBox width="20%" height="100%" class="sapUiSmallMarginEnd">
 							<Label text="{i18n>mainview.filter.project}" />
 							<ComboBox id="projectFilter" width="100%" placeholder="{i18n>mainview.filter.project.placeholder}" items="{inspectionModel>/projects}">
-								<core:ListItem key="{inspectionModel>project}" text="{inspectionModel>project}" />
+								<core:ListItem key="{inspectionModel>PROJECT}" text="{inspectionModel>PROJECT}" />
 							</ComboBox>
 						</VBox>
 						

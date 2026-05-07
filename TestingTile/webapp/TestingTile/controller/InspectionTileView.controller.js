@@ -28,7 +28,7 @@ sap.ui.define([
         getProjects: function () {
             var that = this;
             let BaseProxyURL = that.getInfoModel().getProperty("/BaseProxyURL");
-            let pathApi = "/api/getProjectsVerbaliTileSupervisoreTesting";
+            let pathApi = "/queryMDO/getProjectsVerbaliTesting";
             let url = BaseProxyURL + pathApi;
             
             var plant = that.getInfoModel().getProperty("/plant");
