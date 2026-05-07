@@ -89,7 +89,7 @@ sap.ui.define([
 			that.oFinalCollaudoDetailModel.setProperty("/viewCustomTableActivities", false);
 			that.oFinalCollaudoDetailModel.setProperty("/viewCustomTableOreCollaudo", false);
 			that.oFinalCollaudoDetailModel.setProperty("/selectedGroup", undefined);
-			that.loadAllData(false);
+			that.loadAllData(true);
 		},
 		loadAllData(refreshGroups){
 			var that=this;
